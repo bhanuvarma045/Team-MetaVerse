@@ -7,3 +7,4 @@ passlib[bcrypt]==1.7.4
 python-dotenv==1.0.1
 pydantic[email]==2.10.6
 reportlab==4.2.0
+python-3.11.9
