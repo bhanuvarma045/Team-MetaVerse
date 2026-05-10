@@ -1,0 +1,1 @@
+export default function StopCard({stop}){return <div className="rounded-lg border p-4">{stop?.name || "Stop Card"}</div>;}
