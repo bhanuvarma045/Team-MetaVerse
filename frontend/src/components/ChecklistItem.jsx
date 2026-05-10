@@ -1,0 +1,1 @@
+export default function ChecklistItem({item}){return <div className="flex gap-2"><input type="checkbox" />{item?.text || "Checklist Item"}</div>;}

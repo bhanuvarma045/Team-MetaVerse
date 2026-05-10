@@ -1,0 +1,1 @@
+export default function TripCard({trip}){return <div className="rounded-lg border p-4">{trip?.title || "Trip Card"}</div>;}

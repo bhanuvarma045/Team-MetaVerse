@@ -1,0 +1,1 @@
+export default function ActivityCard({activity}){return <div className="rounded-lg border p-4">{activity?.name || "Activity Card"}</div>;}
