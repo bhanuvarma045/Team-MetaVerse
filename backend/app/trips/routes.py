@@ -167,3 +167,58 @@ async def toggle_share(
 
     await db.commit()
     return {"is_public": trip.is_public, "share_token": trip.share_token}
+
+@router.get("/trips/stats/summary")
+async def get_stats(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    from sqlalchemy import func
+    from app.stops.models import Stop
+
+    # Get all trips
+    trips_result = await db.execute(
+        select(Trip).where(Trip.user_id == current_user.id)
+    )
+    trips = trips_result.scalars().all()
+    trip_ids = [t.id for t in trips]
+
+    total_trips = len(trips)
+    public_trips = sum(1 for t in trips if t.is_public)
+
+    if not trip_ids:
+        return {
+            "total_trips": 0,
+            "public_trips": 0,
+            "total_stops": 0,
+            "countries_visited": 0,
+            "cities_visited": [],
+            "total_days": 0,
+        }
+
+    # Get all stops
+    stops_result = await db.execute(
+        select(Stop).where(Stop.trip_id.in_(trip_ids))
+    )
+    stops = stops_result.scalars().all()
+
+    countries = set(s.country for s in stops)
+    cities = list(set(s.city for s in stops))
+
+    total_days = sum(
+        max((
+            __import__('datetime').datetime.strptime(s.end_date, "%Y-%m-%d") -
+            __import__('datetime').datetime.strptime(s.start_date, "%Y-%m-%d")
+        ).days, 1)
+        for s in stops
+        if s.start_date and s.end_date
+    )
+
+    return {
+        "total_trips": total_trips,
+        "public_trips": public_trips,
+        "total_stops": len(stops),
+        "countries_visited": len(countries),
+        "cities_visited": cities,
+        "total_days": total_days,
+    }

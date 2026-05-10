@@ -13,6 +13,8 @@ from app.checklist.routes import router as checklist_router
 from app.notes.routes import router as notes_router
 from app.community.routes import router as community_router
 from app.search.routes import router as search_router
+from app.profile.routes import router as profile_router
+from app.trips.export import router as export_router
 
 app = FastAPI(title="Traveloop API", version="1.0.0")
 
@@ -43,6 +45,8 @@ app.include_router(checklist_router,  prefix="/api",  tags=["Checklist"])
 app.include_router(notes_router,      prefix="/api",  tags=["Notes"])
 app.include_router(community_router,  prefix="/api",  tags=["Community"])
 app.include_router(search_router,     prefix="/api",  tags=["Search"])
+app.include_router(profile_router, prefix="/api", tags=["Profile"])
+app.include_router(export_router, prefix="/api", tags=["Export"])
 
 @app.get("/")
 def root():
